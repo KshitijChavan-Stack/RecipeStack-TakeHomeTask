@@ -1,5 +1,6 @@
 // TheMealDB API - Free and comprehensive recipe database
-const MEAL_DB_BASE = '/api';
+// Use proxy in development, direct API in production
+const MEAL_DB_BASE = import.meta.env.DEV ? '/api' : 'https://www.themealdb.com/api/json/v1/1';
 
 // Cache for storing fetched recipes
 let recipeCache = null;
@@ -136,9 +137,9 @@ const fetchWithTimeout = async (url, timeout = 8000) => {
     
     const response = await fetch(url, { 
       signal: controller.signal,
+      mode: 'cors',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
       }
     });
     

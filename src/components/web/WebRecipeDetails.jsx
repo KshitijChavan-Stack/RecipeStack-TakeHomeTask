@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { recipeService } from "../../services/recipeService";
-import { optimizeImageUrl } from "../../lib/img";
+import OptimizedImage from "../OptimizedImage";
 
 /* Overlay for background blur */
 const Overlay = ({ open, onClose }) => {
@@ -36,8 +36,13 @@ const WebRecipeDetails = ({ recipeId, open, onClose }) => {
     const load = async () => {
       try {
         setLoading(true);
+        console.log('Loading recipe with ID:', recipeId);
         const res = await recipeService.getRecipeById(recipeId);
+        console.log('Recipe data received:', res);
         if (!cancelled) setData(res);
+      } catch (error) {
+        console.error('Error loading recipe:', error);
+        if (!cancelled) setData(null);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -62,17 +67,20 @@ const WebRecipeDetails = ({ recipeId, open, onClose }) => {
           <div className="flex flex-col h-full">
             {/* Header Image */}
             <div className="relative group">
-              <img
-                src={optimizeImageUrl(data.image, { width: 1000 })}
+              <OptimizedImage
+                src={data.image}
                 alt={data.name}
-                className="w-full h-72 object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                width={1000}
+                height={288}
+                className="w-full h-72 transition-transform duration-500 ease-out group-hover:scale-105"
               />
               <div className="absolute top-4 right-4">
                 <button
-                  className="bg-white/90 backdrop-blur-md rounded-full p-3 shadow-md hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110"
-                  onClick={() => {}}
+                  className="bg-white/90 backdrop-blur-md rounded-full p-3 shadow-md hover:bg-red-50 hover:text-red-600 transition-all duration-300 transform hover:scale-110"
+                  onClick={onClose}
+                  title="Close"
                 >
-                  🤍
+                  ✕
                 </button>
               </div>
             </div>
@@ -120,17 +128,23 @@ const WebRecipeDetails = ({ recipeId, open, onClose }) => {
               >
                 {(data.ingredients || [])
                   .slice(0, 12)
-                  .map((ing, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-xl bg-gradient-to-br from-orange-50 to-white p-4 text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105"
-                    >
-                      <div className="text-2xl mb-2 text-green-600">🥗</div>
-                      <div className="text-sm font-medium text-gray-800 line-clamp-2">
-                        {ing}
+                  .map((ing, idx) => {
+                    const measurement = data.measurements && data.measurements[idx] ? data.measurements[idx] : '';
+                    return (
+                      <div
+                        key={idx}
+                        className="rounded-xl bg-gradient-to-br from-orange-50 to-white p-4 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105"
+                      >
+                        <div className="text-2xl mb-2 text-green-600">🥗</div>
+                        <div className="text-sm font-medium text-gray-800 mb-1">
+                          {ing}
+                        </div>
+                        {measurement && (
+                          <div className="text-xs text-gray-600">{measurement}</div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
               </div>
 
               {/* Instructions */}
@@ -140,23 +154,41 @@ const WebRecipeDetails = ({ recipeId, open, onClose }) => {
               >
                 Cooking Instructions
               </h4>
-              <ol className="space-y-5">
-                {(data.instructions || [data.instructions])
-                  .filter(Boolean)
-                  .flat()
-                  .map((step, i) => (
-                    <li
-                      key={i}
-                      className="bg-gradient-to-r from-orange-50 to-white rounded-xl p-5 text-base text-gray-800 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-[1.01] animate-fadeInUp"
-                      style={{ animationDelay: `${0.6 + i * 0.1}s` }}
-                    >
-                      <div className="font-semibold mb-2 text-gray-900">
-                        Step {i + 1}
+              <div className="space-y-5">
+                {data.instructions ? (
+                  typeof data.instructions === 'string' ? (
+                    data.instructions.split(/\d+\.\s*|\n\s*\n/).filter(step => step.trim()).map((step, i) => (
+                      <div
+                        key={i}
+                        className="bg-gradient-to-r from-orange-50 to-white rounded-xl p-5 text-base text-gray-800 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-[1.01] animate-fadeInUp"
+                        style={{ animationDelay: `${0.6 + i * 0.1}s` }}
+                      >
+                        <div className="font-semibold mb-2 text-gray-900">
+                          Step {i + 1}
+                        </div>
+                        <div className="leading-relaxed">{step.trim()}</div>
                       </div>
-                      {step}
-                    </li>
-                  ))}
-              </ol>
+                    ))
+                  ) : (
+                    Array.isArray(data.instructions) ? data.instructions.map((step, i) => (
+                      <div
+                        key={i}
+                        className="bg-gradient-to-r from-orange-50 to-white rounded-xl p-5 text-base text-gray-800 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-[1.01] animate-fadeInUp"
+                        style={{ animationDelay: `${0.6 + i * 0.1}s` }}
+                      >
+                        <div className="font-semibold mb-2 text-gray-900">
+                          Step {i + 1}
+                        </div>
+                        <div className="leading-relaxed">{step}</div>
+                      </div>
+                    )) : (
+                      <div className="text-gray-500 italic">No instructions available</div>
+                    )
+                  )
+                ) : (
+                  <div className="text-gray-500 italic">No instructions available</div>
+                )}
+              </div>
             </div>
           </div>
         )}

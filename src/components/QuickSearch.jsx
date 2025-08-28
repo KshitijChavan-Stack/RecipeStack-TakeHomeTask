@@ -1,20 +1,27 @@
 import React from 'react';
-import { QUICK_SEARCH_OPTIONS } from '../utils/constants';
 
 const QuickSearch = ({ onQuickSearch }) => {
+  const quickSearchItems = [
+    { label: 'Chicken', emoji: '🐔' },
+    { label: 'Seafood', emoji: '🦐' },
+    { label: 'Vegetarian', emoji: '🥬' },
+    { label: 'Dessert', emoji: '🍰' },
+    { label: 'Pasta', emoji: '🍝' },
+    { label: 'Vegan', emoji: '🌱' },
+  ];
+
   return (
-    <div className="text-center mb-12">
-      <p className="text-gray-600 text-base font-medium mb-6">Quick search:</p>
-      <div className="flex gap-4 justify-center flex-wrap max-w-2xl mx-auto">
-        {QUICK_SEARCH_OPTIONS.map((option, index) => (
-          <button 
-            key={index}
-            type="button" 
-            className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-200 hover:border-blue-300 rounded-full text-sm font-semibold cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-100 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-2 group"
-            onClick={() => onQuickSearch(option.name.toLowerCase())}
+    <div className="mb-8">
+      <h3 className="text-lg font-medium text-gray-900 mb-4 text-center">Quick Search</h3>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {quickSearchItems.map((item) => (
+          <button
+            key={item.label}
+            onClick={() => onQuickSearch(item.label)}
+            className="bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 p-4 rounded-lg transition-all duration-200 flex flex-col items-center gap-2 hover:shadow-sm"
           >
-            <span className="text-lg mr-2 group-hover:scale-110 transition-transform duration-200">{option.emoji}</span>
-            {option.name}
+            <span className="text-xl">{item.emoji}</span>
+            <span className="text-sm font-medium text-gray-700">{item.label}</span>
           </button>
         ))}
       </div>

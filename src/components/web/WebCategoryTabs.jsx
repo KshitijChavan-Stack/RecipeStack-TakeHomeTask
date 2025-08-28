@@ -2,7 +2,7 @@ import React from 'react';
 
 const WebCategoryTabs = ({ active = 'pizza', onPick }) => {
   // This is hard-coded; can be fetched from a backend API service if needed
-  const cats = ['paneer', 'Dessert', 'Noodle', 'Cocktails', 'Salad'];
+  const cats = ['Onions', 'Dessert', 'Butter', 'Tomatoes', 'garlic'];
   return (
     <div className="flex gap-2 flex-wrap justify-center items-center p-2">
       {cats.map((c) => (

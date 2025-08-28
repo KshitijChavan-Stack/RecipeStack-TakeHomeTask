@@ -1,14 +1,18 @@
 import React from 'react';
 
-const ErrorMessage = ({ error, message }) => {
-  const errorMessage = error || message;
-  if (!errorMessage) return null;
-
+const ErrorMessage = ({ error }) => {
   return (
-    <div className="bg-gradient-to-r from-red-50 to-red-100 text-red-600 px-8 py-6 rounded-2xl border-2 border-red-200 max-w-2xl mx-auto mb-8 text-center relative overflow-hidden shadow-lg shadow-red-100">
-      <div className="text-3xl mb-4 animate-bounce">⚠️</div>
-      <div className="relative z-10 text-lg font-medium">{errorMessage}</div>
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse"></div>
+    <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-2xl p-6 text-center mx-auto max-w-md shadow-lg">
+      <div className="text-4xl mb-4">😔</div>
+      <div className="text-xl font-bold text-red-700 mb-2">Oops! Something went wrong</div>
+      <div className="text-red-600 mb-4">{error}</div>
+      <div className="text-sm text-red-500">Please try searching again in a moment</div>
+      <button 
+        onClick={() => window.location.reload()} 
+        className="mt-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+      >
+        Try Again
+      </button>
     </div>
   );
 };

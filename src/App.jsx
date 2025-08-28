@@ -9,6 +9,7 @@ import MobileSwipeStack from './components/mobile/MobileSwipeStack';
 // Shared
 import DecorLayer from './components/DecorLayer';
 import FixedDecor from './components/FixedDecor';
+import FloatingBackground from './components/FloatingBackground';
 
 // Web shell and classic components
 import WebShell from './components/web/WebShell';
@@ -20,7 +21,6 @@ import LoadingSpinner from './components/LoadingSpinner';
 import NoResults from './components/NoResults';
 import PopularRecipes from './components/PopularRecipes';
 import QuickSearch from './components/QuickSearch';
-
 
 // Services
 import { recipeService } from './services/recipeService';
@@ -51,7 +51,10 @@ function App() {
       try {
         setLoading(true);
         setError('');
+        
+        // Load recipes with optimized service
         const all = await recipeService.getAllRecipes();
+        
         if (!cancelled) {
           setAllRecipes(all);
           setRecipes(all);
@@ -66,7 +69,10 @@ function App() {
         if (!cancelled) setLoading(false);
       }
     };
+    
+    // Start loading immediately
     loadAllRecipes();
+    
     return () => {
       cancelled = true;
     };
@@ -121,40 +127,53 @@ function App() {
   };
 
   const MobileLayout = (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 font-sans">
-      <DecorLayer />
-      <FixedDecor variant="main" position="top-right" />
-      <FixedDecor variant="alt" position="bottom-left" />
-
-      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md px-4 py-3 flex items-center justify-between shadow-sm">
-        <MobileHomeHeader query={ingredient} onQuery={handleIngredientChange} />
-        <button
-          onClick={() => setShowCookLater(true)}
-          className="ml-2 shrink-0 bg-white rounded-full p-2.5 shadow-md text-red-500 hover:bg-red-50 transition-colors duration-200"
-          title="Cook later"
-        >
-          ❤️
-        </button>
+    <div className="min-h-screen bg-gray-50 font-sans relative">
+      <FloatingBackground />
+      {/* Header */}
+      <div className="sticky top-0 z-30 bg-white border-b border-gray-200">
+        <div className="px-4 py-4 flex items-center justify-between">
+          <div className="flex-1">
+            <h1 className="text-xl font-semibold text-gray-900 mb-2">Recipe Finder</h1>
+            <MobileHomeHeader query={ingredient} onQuery={handleIngredientChange} />
+          </div>
+          <button
+            onClick={() => setShowCookLater(true)}
+            className="relative ml-3 bg-white border border-gray-300 text-gray-700 rounded-full p-3 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+            title="Cook later"
+          >
+            <span className="text-lg">🤍</span>
+            {cookLater.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-gray-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                {cookLater.length}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
 
-      <div className="px-4 mt-4 mb-6 max-w-md mx-auto">
+      {/* Quick Search */}
+      <div className="px-4 mt-6 mb-4">
         <QuickSearch onQuickSearch={handleIngredientChange} />
       </div>
 
-      <div className="px-4 mb-6 max-w-md mx-auto">
+      {/* Popular Recipes */}
+      <div className="px-4 mb-6">
         <PopularRecipes isCollapsed />
       </div>
 
-      <div className="px-4 max-w-md mx-auto">
+      {/* Main Content */}
+      <div className="px-4 pb-8">
         {error && <ErrorMessage error={error} />}
         {loading && <LoadingSpinner />}
         {!loading && allRecipes.length > 0 && (
-          <MobileSwipeStack
-            items={allRecipes}
-            onSave={handleSave}
-            onDiscard={handleDiscard}
-            onOpen={setOpenId}
-          />
+          <div className="max-w-sm mx-auto">
+            <MobileSwipeStack
+              items={allRecipes}
+              onSave={handleSave}
+              onDiscard={handleDiscard}
+              onOpen={setOpenId}
+            />
+          </div>
         )}
         {!loading && recipes.length === 0 && !error && <NoResults />}
       </div>
@@ -165,41 +184,57 @@ function App() {
             className="absolute inset-0 bg-black/50 transition-opacity duration-300"
             onClick={() => setShowCookLater(false)}
           />
-          <div className="relative w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl p-6 max-h-[80vh] overflow-y-auto transform transition-all duration-300 sm:max-w-lg sm:top-1/2 sm:-translate-y-1/2">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Cook Later ({cookLater.length})</h3>
-              <button
-                className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200"
-                onClick={() => setShowCookLater(false)}
-              >
-                Close
-              </button>
-            </div>
-            <ul className="space-y-4">
-              {cookLater.map((r) => (
-                <li
-                  key={r.id}
-                  className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+          <div className="relative w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 sm:max-w-lg">
+            <div className="bg-gray-900 px-6 py-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">
+                  Saved Recipes ({cookLater.length})
+                </h3>
+                <button
+                  className="text-gray-400 hover:text-white rounded-full p-1 transition-colors duration-200"
+                  onClick={() => setShowCookLater(false)}
                 >
-                  <img
-                    src={r.image}
-                    alt={r.name}
-                    className="w-14 h-14 rounded-md object-cover"
-                  />
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-800">{r.name}</div>
-                    <div className="text-xs text-gray-500">
-                      {r.cuisine} • {r.prepTimeMinutes + (r.cookTimeMinutes || 0)}m
-                    </div>
-                  </div>
-                </li>
-              ))}
-              {cookLater.length === 0 && (
-                <div className="text-sm text-gray-500 text-center py-6">
-                  No saved recipes yet.
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div className="max-h-[60vh] overflow-y-auto p-6">
+              {cookLater.length > 0 ? (
+                <ul className="space-y-3">
+                  {cookLater.map((r) => (
+                    <li
+                      key={r.id}
+                      className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-200 border border-gray-200"
+                    >
+                      <img
+                        src={r.image}
+                        alt={r.name}
+                        className="w-14 h-14 rounded-lg object-cover"
+                      />
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 mb-1">{r.name}</div>
+                        <div className="text-sm text-gray-600 flex items-center gap-2">
+                          <span className="bg-white px-2 py-1 rounded text-xs border">{r.cuisine}</span>
+                          <span>⏱ {r.prepTimeMinutes + (r.cookTimeMinutes || 0)}m</span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setOpenId(r.id)}
+                        className="bg-gray-900 text-white px-3 py-2 rounded text-xs font-medium hover:bg-gray-800 transition-all duration-200"
+                      >
+                        View
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="text-4xl mb-4 text-gray-400">📝</div>
+                  <div className="text-gray-600 mb-2">No saved recipes yet</div>
+                  <div className="text-sm text-gray-500">Swipe right on recipes to save them!</div>
                 </div>
               )}
-            </ul>
+            </div>
           </div>
         </div>
       )}
@@ -213,11 +248,8 @@ function App() {
   );
 
   const WebLayout = (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 font-sans">
-      <DecorLayer />
-      <FixedDecor variant="main" position="top-right" />
-      <FixedDecor variant="alt" position="bottom-left" />
-
+    <div className="min-h-screen bg-white font-sans relative">
+      <FloatingBackground />
       <WebShell
         query={ingredient}
         onQuery={handleIngredientChange}
@@ -230,19 +262,36 @@ function App() {
         cookLaterCount={cookLater.length}
         onShowCookLater={() => setShowCookLater(true)}
       >
-        <div className="mt-4 mb-6 max-w-5xl mx-auto">
+        {/* Hero Section */}
+        <div className="text-center mb-12 px-6">
+          <h1 className="text-4xl md:text-5xl font-light text-gray-900 mb-4">
+            Recipe Finder
+          </h1>
+          <p className="text-lg text-gray-600 max-w-xl mx-auto font-light">
+            Discover recipes, save favorites, cook with confidence
+          </p>
+        </div>
+
+        {/* Quick Search */}
+        <div className="mb-8 max-w-4xl mx-auto px-6">
           <QuickSearch onQuickSearch={handleIngredientChange} />
         </div>
 
-        <div className="mb-8 max-w-5xl mx-auto">
-          <PopularRecipes isCollapsed />
+        {/* Popular Recipes */}
+        <div className="mb-12 max-w-6xl mx-auto px-6">
+          <PopularRecipes isCollapsed={false} />
         </div>
 
-        <div className="max-w-5xl mx-auto">
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-6">
           {error && <ErrorMessage error={error} />}
           {loading && <LoadingSpinner />}
           {!loading && recipes.length > 0 && (
-            <RecipeGrid recipes={recipes} ingredient={ingredient || 'All'} />
+            <RecipeGrid 
+              recipes={recipes} 
+              ingredient={ingredient || 'All'} 
+              onRecipeClick={setOpenId}
+            />
           )}
           {!loading && recipes.length === 0 && !error && <NoResults />}
         </div>
@@ -260,41 +309,57 @@ function App() {
             className="absolute inset-0 bg-black/50 transition-opacity duration-300"
             onClick={() => setShowCookLater(false)}
           />
-          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl p-6 max-h-[80vh] overflow-y-auto transform transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold text-gray-800">Cook Later ({cookLater.length})</h3>
-              <button
-                className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200"
-                onClick={() => setShowCookLater(false)}
-              >
-                Close
-              </button>
-            </div>
-            <ul className="space-y-4">
-              {cookLater.map((r) => (
-                <li
-                  key={r.id}
-                  className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+          <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-xl overflow-hidden transform transition-all duration-300 mx-4">
+            <div className="bg-gray-900 px-6 py-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">
+                  Saved Recipes ({cookLater.length})
+                </h3>
+                <button
+                  className="text-gray-400 hover:text-white rounded-full p-1 transition-colors duration-200"
+                  onClick={() => setShowCookLater(false)}
                 >
-                  <img
-                    src={r.image}
-                    alt={r.name}
-                    className="w-16 h-16 rounded-lg object-cover"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-800">{r.name}</div>
-                    <div className="text-sm text-gray-500">
-                      {r.cuisine} • {r.prepTimeMinutes + (r.cookTimeMinutes || 0)}m
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div className="max-h-[70vh] overflow-y-auto p-6">
+              {cookLater.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {cookLater.map((r) => (
+                    <div
+                      key={r.id}
+                      className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-200 border border-gray-200 hover:shadow-sm"
+                    >
+                      <img
+                        src={r.image}
+                        alt={r.name}
+                        className="w-16 h-16 rounded-lg object-cover"
+                      />
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 mb-1">{r.name}</div>
+                        <div className="text-sm text-gray-600 flex items-center gap-2 mb-2">
+                          <span className="bg-white px-2 py-1 rounded text-xs border">{r.cuisine}</span>
+                          <span>⏱ {r.prepTimeMinutes + (r.cookTimeMinutes || 0)}m</span>
+                        </div>
+                        <button
+                          onClick={() => {setOpenId(r.id); setShowCookLater(false);}}
+                          className="bg-gray-900 text-white px-3 py-1 rounded text-xs font-medium hover:bg-gray-800 transition-all duration-200"
+                        >
+                          View Recipe
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
-              {cookLater.length === 0 && (
-                <div className="text-center text-gray-500 py-8">
-                  No saved recipes yet.
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="text-4xl mb-4 text-gray-400">📝</div>
+                  <div className="text-gray-600 mb-2">No saved recipes yet</div>
+                  <div className="text-sm text-gray-500">Save recipes to cook later and find them here!</div>
                 </div>
               )}
-            </ul>
+            </div>
           </div>
         </div>
       )}

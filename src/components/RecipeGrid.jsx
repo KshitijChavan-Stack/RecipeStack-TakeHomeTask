@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { optimizeImageUrl } from '../lib/img';
 import RecipeDetailsPopup from './RecipeDetailsPopup';
+import OptimizedImage from './OptimizedImage';
 
-const RecipeGrid = ({ recipes, ingredient, category }) => {
+const RecipeGrid = ({ recipes, ingredient, category, onRecipeClick }) => {
   const [selectedRecipeId, setSelectedRecipeId] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -19,8 +20,12 @@ const RecipeGrid = ({ recipes, ingredient, category }) => {
   };
 
   const handleViewRecipe = (recipeId) => {
-    setSelectedRecipeId(recipeId);
-    setIsPopupOpen(true);
+    if (onRecipeClick) {
+      onRecipeClick(recipeId);
+    } else {
+      setSelectedRecipeId(recipeId);
+      setIsPopupOpen(true);
+    }
   };
 
   const handleClosePopup = () => {
@@ -41,13 +46,12 @@ const RecipeGrid = ({ recipes, ingredient, category }) => {
             style={{ animationDelay: `${index * 0.1}s` }}
           >
             <div className="relative overflow-hidden">
-              <img
-                src={optimizeImageUrl(recipe.image, { width: 600 })}
+              <OptimizedImage
+                src={recipe.image}
                 alt={recipe.name}
-                loading="lazy"
                 width={600}
                 height={224}
-                className="w-full h-48 object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                className="w-full h-48 transition-transform duration-500 ease-out group-hover:scale-105"
               />
               <div className="absolute top-3 left-3 bg-white bg-opacity-90 rounded-full px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm z-10">
                 {recipe.cuisine}

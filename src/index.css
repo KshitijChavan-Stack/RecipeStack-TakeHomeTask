@@ -1,274 +1,155 @@
+/* Tailwind entrypoints */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------
+   Base Reset & Global Styles
+------------------------------- */
 @layer base {
-:root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+  body {
+    @apply font-sans bg-gradient-to-br from-gray-50 to-gray-100 text-gray-700 leading-relaxed dark:from-gray-900 dark:to-gray-800 dark:text-gray-200;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 
-@keyframes slideUp { from { transform: translateY(100%);} to { transform: translateY(0);} }
-.animate-slideUp{ animation: slideUp .25s ease-out; }
-
-/* float+tilt animation for corner decor */
-@keyframes floatTilt { 0%,100%{ transform: translateY(0) rotate(-6deg);} 50%{ transform: translateY(-8px) rotate(-2deg);} }
-.animate-floatTilt{ animation: floatTilt 4s ease-in-out infinite; }
-
-/* Thin scrollbar utilities */
-.mini-scrollbar{ scrollbar-width: thin; scrollbar-color: #fca5a5 transparent; }
-.mini-scrollbar::-webkit-scrollbar{ height: 6px; width: 6px; }
-.mini-scrollbar::-webkit-scrollbar-track{ background: transparent; }
-.mini-scrollbar::-webkit-scrollbar-thumb{ background: linear-gradient(180deg, #f59e0b, #fb923c); border-radius: 8px; }
-
-/* Horizontal thin scrollbar (for chips/ingredients row) */
-.mini-scrollbar-x{ scrollbar-width: thin; }
-.mini-scrollbar-x::-webkit-scrollbar{ height: 6px; }
-.mini-scrollbar-x::-webkit-scrollbar-track{ background: rgba(0,0,0,0.06); border-radius: 8px; }
-.mini-scrollbar-x::-webkit-scrollbar-thumb{ background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 8px; }
-
-@layer base {
-  * { border-color: hsl(var(--border)); }
-  body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); }
-}
-
-/* Custom CSS to complement Tailwind utility classes */
-body { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); line-height: 1.6; }
-
-.app { background-image: radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.05) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.05) 0%, transparent 50%); }
-
-.header h1 {
-  background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.search-form {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.search-input {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.search-button {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  transition: all 0.3s ease;
-}
-
-.search-button:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
-}
-
-.quick-search-btn {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-}
-
-.quick-search-btn:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: #3b82f6;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
-}
-
-.suggestion-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-}
-
-.suggestion-card:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: #3b82f6;
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
-}
-
-.recipe-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-}
-
-.recipe-card:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: translateY(-8px);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-}
-
-.recipe-image {
-  transition: all 0.3s ease;
-}
-
-.recipe-card:hover .recipe-image {
-  transform: scale(1.05);
-}
-
-.error-message {
-  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-  border: 1px solid #f87171;
-  animation: slideIn 0.5s ease-out;
-}
-
-.loading-spinner {
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
-}
-
-/* Custom animations */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
+/* ------------------------------
+   Components Layer
+------------------------------- */
+@layer components {
+  /* App container with subtle pattern */
+  .app {
+    @apply min-h-screen relative;
+    background-image:
+      radial-gradient(circle at 25% 25%, rgba(255, 204, 128, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(251, 146, 60, 0.05) 0%, transparent 50%);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  /* Layout */
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6;
   }
-}
 
-@keyframes sizzle {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.1) rotate(5deg); }
-}
-
-@keyframes toss {
-  0% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(180deg); }
-  100% { transform: translateY(0) rotate(360deg); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { 
-    box-shadow: 0 0 5px currentColor;
-    opacity: 1;
+  /* Header */
+  .header {
+    @apply text-center mb-12;
   }
-  50% { 
-    box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
-    opacity: 0.8;
+
+  .header h1 {
+    @apply text-4xl md:text-5xl font-extrabold mb-4;
+    background: linear-gradient(135deg, #1e293b 0%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-}
 
-/* Enhanced scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-}
+  .header p {
+    @apply text-lg text-gray-500 dark:text-gray-400;
+  }
 
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.5);
-  border-radius: 4px;
-  transition: background 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.7);
-}
-
-/* Custom hover effects */
-.hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-/* Enhanced mobile responsiveness */
-@media (max-width: 768px) {
+  /* Search box */
   .search-form {
-    margin: 1rem;
-    padding: 1.5rem;
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/20 mb-8;
   }
-  
+
+  .search-container {
+    @apply flex flex-col sm:flex-row gap-4 items-center;
+  }
+
+  .search-input {
+    @apply flex-1 bg-white/90 dark:bg-gray-700/80 border-2 border-transparent rounded-lg px-4 py-3 text-base shadow-md transition-all duration-300;
+  }
+
+  .search-input:focus {
+    @apply border-yellow-400 ring-2 ring-yellow-200 dark:ring-yellow-600 shadow-lg outline-none scale-105;
+  }
+
+  .search-button {
+    @apply bg-gradient-to-br from-yellow-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  /* Results */
+  .results h2 {
+    @apply text-2xl md:text-3xl font-semibold text-gray-800 dark:text-gray-200 mb-6 text-center;
+  }
+
+  .recipes-grid {
+    @apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-6;
+  }
+
   .recipe-card {
-    margin: 0.5rem;
+    @apply bg-white/95 dark:bg-gray-800/90 backdrop-blur-md border border-gray-100 dark:border-gray-700 rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:scale-105 hover:shadow-xl;
   }
-  
+
+  .recipe-image {
+    @apply w-full h-48 object-cover transition-transform duration-500;
+  }
+
+  .recipe-card:hover .recipe-image {
+    @apply scale-110;
+  }
+
+  .recipe-content {
+    @apply p-6;
+  }
+
+  .recipe-title {
+    @apply text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2;
+  }
+
+  .recipe-id {
+    @apply text-sm text-gray-500 dark:text-gray-400;
+  }
+
+  .no-results {
+    @apply text-center py-6 text-xl text-gray-500 dark:text-gray-400;
+  }
+
+  /* Buttons */
+  .quick-search-btn {
+    @apply bg-white/90 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-md rounded-lg px-4 py-2 transition-all duration-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 hover:border-yellow-400 hover:scale-105;
+  }
+
+  /* Suggestion cards */
   .suggestion-card {
-    margin: 0.5rem;
+    @apply bg-white/95 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl shadow-md transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl;
   }
+
+  /* Error messages */
+  .error-message {
+    @apply bg-red-50 dark:bg-red-900 border-2 border-red-200 dark:border-red-700 rounded-lg p-4 text-center text-red-600 dark:text-red-300 animate-pulse;
+  }
+
+  /* Loading overlay */
+  .loading-spinner {
+    @apply fixed inset-0 flex items-center justify-center bg-gray-900/60 dark:bg-gray-800/70 backdrop-blur-md;
+  }
+
+  /* Scrollbar */
+  .custom-scrollbar {
+    @apply scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-yellow-600 dark:scrollbar-track-gray-700;
+  }
+}
+
+/* ------------------------------
+   Animations & Utilities
+------------------------------- */
+@layer utilities {
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .animate-float { animation: float 3s ease-in-out infinite; }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.8); }
+  }
+  .animate-pulse-glow { animation: pulse-glow 2s infinite; }
 }

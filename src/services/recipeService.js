@@ -1,4 +1,9 @@
-const BASE_URL = 'https://dummyjson.com/recipes';
+// Use /api so Vite proxy can forward requests to dummyjson.com
+// (set up proxy in vite.config.js)
+const BASE_URL = '/api/recipes';
+
+// Optional fallback (local JSON if API fails)
+
 
 export const recipeService = {
   // Search recipes by ingredient
@@ -8,61 +13,78 @@ export const recipeService = {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       const recipes = data.recipes || [];
-      
-      // Filter recipes by ingredient (case-insensitive search)
-      const filteredRecipes = recipes.filter(recipe => {
-        const searchTerm = ingredient.toLowerCase();
-        return (
-          recipe.name.toLowerCase().includes(searchTerm) ||
-          recipe.ingredients.some(ing => ing.toLowerCase().includes(searchTerm)) ||
-          recipe.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
-          recipe.cuisine.toLowerCase().includes(searchTerm)
-        );
-      });
-      
-      return filteredRecipes;
+
+      const searchTerm = ingredient.toLowerCase();
+      return recipes.filter(recipe =>
+        recipe.name.toLowerCase().includes(searchTerm) ||
+        recipe.ingredients.some(ing => ing.toLowerCase().includes(searchTerm)) ||
+        recipe.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+        recipe.cuisine.toLowerCase().includes(searchTerm)
+      );
     } catch (error) {
-      console.error('Error fetching recipes:', error);
-      throw new Error('Failed to fetch recipes. Please try again later !');
+      console.error('Error fetching recipes by ingredient:', error);
+      // fallback
+      return mockRecipes.filter(recipe =>
+        recipe.name.toLowerCase().includes(ingredient.toLowerCase())
+      );
+    }
+  },
+
+  // Search recipes by category/cuisine
+  async searchByCategory(category) {
+    try {
+      const response = await fetch(`${BASE_URL}?limit=50`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const recipes = data.recipes || [];
+
+      const searchTerm = category.toLowerCase();
+      return recipes.filter(recipe =>
+        recipe.cuisine.toLowerCase().includes(searchTerm) ||
+        recipe.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+        recipe.name.toLowerCase().includes(searchTerm)
+      );
+    } catch (error) {
+      console.error('Error fetching recipes by category:', error);
+      // fallback
+      return mockRecipes.filter(recipe =>
+        recipe.cuisine.toLowerCase().includes(category.toLowerCase())
+      );
     }
   },
 
   async getRecipeById(recipeId) {
-    // Get recipe by id (If someone want to search with id)
-    // not done much here just some magic of SQL query
     try {
       const response = await fetch(`${BASE_URL}/${recipeId}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
-      const recipe = await response.json();
-      return recipe;
+      return await response.json();
     } catch (error) {
       console.error('Error fetching recipe:', error);
-      throw new Error('Failed to fetch recipe details. Please try again.');
+      // fallback
+      return mockRecipes.find(r => r.id === Number(recipeId));
     }
   },
 
-  // Get all recipes from the API and then we can also filter if needed
-  // we have added the limit parameter to 50, we can chnage if require
   async getAllRecipes() {
     try {
       const response = await fetch(`${BASE_URL}?limit=50`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
       const data = await response.json();
-      // It's basically saying "give me the recipes, but if there aren't any, just give me an empty list so nothing breaks."
-      // prevent app crashing without safty check
       return data.recipes || [];
     } catch (error) {
       console.error('Error fetching all recipes:', error);
-      throw new Error('Failed to fetch recipes. Please try again.');
+      // fallback
+      return mockRecipes;
     }
   }
 };

@@ -30,3 +30,7 @@ const MobileTopTabs = ({ active = 'all', favoriteCount = 3, onTab }) => {
 
 export default MobileTopTabs
 
+
+
+
+

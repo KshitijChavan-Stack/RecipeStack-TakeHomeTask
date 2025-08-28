@@ -6,24 +6,24 @@ const FixedDecor = ({ variant = 'main', position = 'top-right' }) => {
   const imageSrc = variant === 'alt' ? decorImg1 : decorImg
 
   const baseClass =
-    'fixed pointer-events-none select-none z-0 opacity-80 animate-floatTilt w-40 sm:w-56 md:w-72'
+    'fixed pointer-events-none select-none z-10 opacity-80 animate-floatTilt w-40 sm:w-56 md:w-72'
 
   let posClass = ''
   switch (position) {
     case 'top-left':
-      posClass = 'top-6 left-2 sm:left-6 md:left-10'
+      posClass = 'top-8 left-4 sm:left-8 md:left-12'
       break
     case 'top-right':
-      posClass = 'top-6 right-2 sm:right-6 md:right-10'
+      posClass = 'top-8 right-4 sm:right-8 md:right-12'
       break
     case 'bottom-left':
-      posClass = 'bottom-6 left-2 sm:left-6 md:left-10'
+      posClass = 'bottom-8 left-16 sm:left-20 md:left-24'
       break
     case 'bottom-right':
-      posClass = 'bottom-6 right-2 sm:right-6 md:right-10'
+      posClass = 'bottom-8 right-4 sm:right-8 md:right-12'
       break
     default:
-      posClass = 'top-6 right-2 sm:right-6 md:right-10'
+      posClass = 'top-8 right-4 sm:right-8 md:right-12'
   }
 
   return <img src={imageSrc} alt="decor" className={`${baseClass} ${posClass}`} />

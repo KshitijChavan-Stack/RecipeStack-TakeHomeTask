@@ -21,3 +21,7 @@ const CornerDecor = ({ src = '/decor-chef.png', position = 'bottom-right' }) => 
 
 export default CornerDecor
 
+
+
+
+

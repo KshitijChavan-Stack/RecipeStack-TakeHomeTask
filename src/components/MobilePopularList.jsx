@@ -33,3 +33,7 @@ const MobilePopularList = ({ recipes = [], onOpen }) => {
 
 export default MobilePopularList
 
+
+
+
+

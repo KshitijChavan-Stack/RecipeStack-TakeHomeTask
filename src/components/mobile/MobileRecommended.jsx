@@ -30,3 +30,7 @@ const MobileRecommended = ({ recipes = [] }) => {
 
 export default MobileRecommended
 
+
+
+
+

@@ -30,3 +30,7 @@ const MobileSearchChips = ({ value, onChange, onChip }) => {
 
 export default MobileSearchChips
 
+
+
+
+

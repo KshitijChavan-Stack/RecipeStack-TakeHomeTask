@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { recipeService } from '../services/recipeService';
+import RecipeDetailsPopup from './RecipeDetailsPopup'
 
 const PopularRecipes = ({ isCollapsed = false }) => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isExpanded, setIsExpanded] = useState(!isCollapsed);
+  const [selectedRecipeId, setSelectedRecipeId] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
     const fetchPopularRecipes = async () => {
@@ -37,6 +40,15 @@ const PopularRecipes = ({ isCollapsed = false }) => {
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handleView = (id) => {
+    setSelectedRecipeId(id);
+    setIsPopupOpen(true);
+  };
+  const handleClose = () => {
+    setIsPopupOpen(false);
+    setSelectedRecipeId(null);
   };
 
   if (loading) {
@@ -171,7 +183,7 @@ const PopularRecipes = ({ isCollapsed = false }) => {
                 <span className="text-sm text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full">
                   {recipe.caloriesPerServing} cal
                 </span>
-                <button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                <button onClick={() => handleView(recipe.id)} className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                   View Recipe
                 </button>
               </div>
@@ -179,6 +191,13 @@ const PopularRecipes = ({ isCollapsed = false }) => {
           </div>
         ))}
       </div>
+
+      {/* Details popup */}
+      <RecipeDetailsPopup 
+        recipeId={selectedRecipeId}
+        open={isPopupOpen}
+        onClose={handleClose}
+      />
     </div>
   );
 };

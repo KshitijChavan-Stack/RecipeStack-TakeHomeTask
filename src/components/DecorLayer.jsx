@@ -4,9 +4,9 @@ import React, { useMemo } from 'react'
 const modules = import.meta.glob('/src/assets/*.{png,jpg,jpeg,svg,gif,webp}', { eager: true, import: 'default' })
 
 const positions = [
-  { cls: 'top-4 left-3 rotate-[-8deg]' },
+  { cls: 'top-4 left-16 sm:left-20 md:left-24 rotate-[-8deg]' },
   { cls: 'top-6 right-4 rotate-[-4deg]' },
-  { cls: 'bottom-6 left-4 rotate-[-6deg]' },
+  { cls: 'bottom-6 left-16 sm:left-20 md:left-24 rotate-[-6deg]' },
   { cls: 'bottom-8 right-6 rotate-[-10deg]' },
 ]
 
@@ -32,4 +32,8 @@ const DecorLayer = ({ size = 'w-20 sm:w-24 md:w-28', opacity = 'opacity-75' }) =
 }
 
 export default DecorLayer
+
+
+
+
 

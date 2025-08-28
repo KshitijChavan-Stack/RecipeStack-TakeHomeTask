@@ -22,3 +22,7 @@ const MobileHomeHeader = ({ name='Michelle', query, onQuery }) => {
 
 export default MobileHomeHeader
 
+
+
+
+
